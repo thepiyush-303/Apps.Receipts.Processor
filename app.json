@@ -1,0 +1,50 @@
+{
+    "id": "4d75ed99-76b4-4d3c-93f7-43ed323dd179",
+    "version": "0.0.1",
+    "requiredApiVersion": "^1.44.0",
+    "iconFile": "icon.png",
+    "author": {
+        "name": "william",
+        "homepage": "https://github.com/4shb0rne",
+        "support": "https://github.com/4shb0rne"
+    },
+    "name": "receipt-processor",
+    "nameSlug": "receipt-processor",
+    "classFile": "ReceiptProcessorApp.ts",
+    "description": "App that will help to manage your spending based on the receipts",
+    "implements": [
+        "IPostMessageSent"
+    ],
+    "permissions": [
+        {
+            "name": "user.read"
+        },
+        {
+            "name": "user.write"
+        },
+        {
+            "name": "room.read"
+        },
+        {
+            "name": "room.write"
+        },
+        {
+            "name": "message.read"
+        },
+        {
+            "name": "message.write"
+        },
+        {
+            "name": "api"
+        },
+        {
+            "name": "networking"
+        },
+        {
+            "name": "threads.read"
+        },
+        {
+            "name": "upload.read"
+        }
+    ]
+}
