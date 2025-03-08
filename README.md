@@ -7,7 +7,7 @@
 We’ve all wasted hours squinting at crumpled receipts and battling spreadsheets. With the AI Receipts Processor, manual expense tracking becomes obsolete. This app transforms piles of receipts into organized reports with AI-powered precision.
 
 <div align="center">
-  test
+    <img width=60% src="https://github.com/user-attachments/assets/50c511e5-9e55-4618-95e6-a42720a41595">
 </div>
 
 
