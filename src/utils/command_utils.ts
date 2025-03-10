@@ -9,7 +9,7 @@ import { SlashCommandContext } from "@rocket.chat/apps-engine/definition/slashco
 import { IUser } from "@rocket.chat/apps-engine/definition/users";
 import { IExecutorProps } from "../domain/commandExecutor";
 import { ReceiptProcessorApp } from "../../ReceiptProcessorApp";
-import { listReceiptData } from "../lib/receiptProcessing";
+import { ReceiptHandler } from "../handler/receiptHandler";
 
 export class CommandUtility {
     sender: IUser;
@@ -21,6 +21,7 @@ export class CommandUtility {
     http: IHttp;
     persistence: IPersistence;
     app: ReceiptProcessorApp;
+    receiptHandler: ReceiptHandler
 
     constructor(props: IExecutorProps) {
         this.sender = props.sender;
@@ -45,7 +46,7 @@ export class CommandUtility {
                     return;
                 }
 
-                await listReceiptData(this.read.getPersistenceReader(), this.modify, this.sender, this.room, appUser);
+                await this.receiptHandler.listReceiptData(this.sender, this.room, appUser)
             }
         }
     }
