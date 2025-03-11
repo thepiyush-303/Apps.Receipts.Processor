@@ -10,14 +10,16 @@ import {
 import { App } from '@rocket.chat/apps-engine/definition/App';
 import { IAppInfo } from '@rocket.chat/apps-engine/definition/metadata';
 import { IMessage, IPostMessageSent } from "@rocket.chat/apps-engine/definition/messages";
-import { settings } from './src/config/settings';
+import { getAPIConfig, settings } from './src/config/settings';
 import { sendMessage } from "./src/utils/message";
-import { RECEIPT_SCAN_PROMPT } from './src/const/prompt';
 import { GENERAL_ERROR_RESPONSE, INVALID_IMAGE_RESPONSE, SUCCESSFUL_IMAGE_DETECTION_RESPONSE } from './src/const/response';
 import { ReceiptCommand } from './src/commands/ReceiptCommand';
-import { ImageProcessor } from "./src/handler/imageHandler";
+import { ImageHandler } from "./src/handler/imageHandler";
 import { ReceiptHandler } from './src/handler/receiptHandler';
 import { IReceiptData, IReceiptItem } from './src/domain/receipt';
+import { PromptLibrary } from './src/domain/promptLibrary';
+import { OCR_SYSTEM_PROMPT, RECEIPT_SCAN_PROMPT, RECEIPT_VALIDATION_PROMPT } from "./src/const/prompt";
+import { LLMUtility } from "./src/utils/llm_utils"
 
 export class ReceiptProcessorApp extends App implements IPostMessageSent {
     constructor(info: IAppInfo, logger: ILogger, accessors: IAppAccessors) {
@@ -33,7 +35,8 @@ export class ReceiptProcessorApp extends App implements IPostMessageSent {
             ),
             configuration.slashCommands.provideSlashCommand(
                 new ReceiptCommand(this)
-            )
+            ),
+            this.initializePromptLibrary()
         ]);
     }
 
@@ -46,16 +49,17 @@ export class ReceiptProcessorApp extends App implements IPostMessageSent {
     ): Promise<void> {
         this.getLogger().info("Execute post message sent")
         const appUser = await this.getAccessors().reader.getUserReader().getAppUser(this.getID())
-        const imageProcessor = new ImageProcessor(http, read)
+        const imageProcessor = new ImageHandler(http, read)
         const isReceipt = await imageProcessor.validateImage(message)
         const userId = message.sender.id
         const messageId = message.id
+        const { modelType } = await getAPIConfig(read);
 
         if (appUser) {
             if(isReceipt && messageId) {
                 const receiptHandler = new ReceiptHandler(persistence, read.getPersistenceReader(), modify)
 
-                const response = await imageProcessor.processImage(message, RECEIPT_SCAN_PROMPT)
+                const response = await imageProcessor.processImage(message, PromptLibrary.getPrompt(modelType, "RECEIPT_SCAN_PROMPT"))
                 const result = await receiptHandler.parseReceiptData(response, userId, messageId, message.room.id)
 
                 if (result === INVALID_IMAGE_RESPONSE) {
@@ -92,6 +96,24 @@ export class ReceiptProcessorApp extends App implements IPostMessageSent {
 
     public async checkPostMessageSent(message: IMessage): Promise<boolean> {
         this.getLogger().info("Message Attachments:", message.attachments);
-        return message.attachments?.some(ImageProcessor.isImageAttachment) ?? false;
+        return message.attachments?.some(ImageHandler.isImageAttachment) ?? false;
+    }
+
+    private initializePromptLibrary() {
+        LLMUtility.initialize(
+            {
+                "OCR_SYSTEM_PROMPT": OCR_SYSTEM_PROMPT,
+                "RECEIPT_SCAN_PROMPT": RECEIPT_SCAN_PROMPT,
+                "RECEIPT_VALIDATION_PROMPT": RECEIPT_VALIDATION_PROMPT
+            },
+            [
+                {
+                    name: "meta-llama/Llama-3.2-11B-Vision-Instruct",
+                    parameters: "11B",
+                    quantization: "Vision",
+                    prompts: ["OCR_SYSTEM_PROMPT", "RECEIPT_SCAN_PROMPT", "RECEIPT_VALIDATION_PROMPT"]
+                }
+            ]
+        );
     }
 }

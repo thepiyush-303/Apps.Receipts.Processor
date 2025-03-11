@@ -1,12 +1,12 @@
 import { IRead, IHttp } from "@rocket.chat/apps-engine/definition/accessors";
 import { IMessage, IMessageAttachment } from "@rocket.chat/apps-engine/definition/messages";
-import { OCR_SYSTEM_PROMPT, RECEIPT_VALIDATION_PROMPT } from "../const/prompt";
 import { getAPIConfig } from "../config/settings";
+import { PromptLibrary } from "../domain/promptLibrary";
 
-export class ImageProcessor {
+export class ImageHandler {
   constructor(
     private readonly http: IHttp,
-    private readonly read: IRead
+    private readonly read: IRead,
   ) {}
 
   public async processImage(message: IMessage, prompt: string): Promise<any> {
@@ -19,7 +19,8 @@ export class ImageProcessor {
 
   public async validateImage(message: IMessage): Promise<boolean> {
     try {
-      const response = await this.processImage(message, RECEIPT_VALIDATION_PROMPT);
+      const { modelType } = await getAPIConfig(this.read);
+      const response = await this.processImage(message, PromptLibrary.getPrompt(modelType, "RECEIPT_VALIDATION_PROMPT"));
       const jsonResponse = JSON.parse(response);
       return jsonResponse.is_receipt === true;
     } catch (error) {
@@ -47,7 +48,7 @@ export class ImageProcessor {
       messages: [
         {
           role: "system",
-          content: OCR_SYSTEM_PROMPT,
+          content: PromptLibrary.getPrompt(modelType, "OCR_SYSTEM_PROMPT"),
         },
         {
           role: "user",
