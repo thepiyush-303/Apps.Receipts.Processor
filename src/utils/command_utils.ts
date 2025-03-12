@@ -33,6 +33,7 @@ export class CommandUtility {
         this.http = props.http;
         this.persistence = props.persistence;
         this.app = props.app;
+        this.receiptHandler = new ReceiptHandler(this.persistence, this.read.getPersistenceReader(), this.modify)
     }
 
     public async execute() {

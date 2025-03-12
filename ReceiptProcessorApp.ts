@@ -17,9 +17,8 @@ import { ReceiptCommand } from './src/commands/ReceiptCommand';
 import { ImageHandler } from "./src/handler/imageHandler";
 import { ReceiptHandler } from './src/handler/receiptHandler';
 import { IReceiptData, IReceiptItem } from './src/domain/receipt';
-import { PromptLibrary } from './src/domain/promptLibrary';
 import { OCR_SYSTEM_PROMPT, RECEIPT_SCAN_PROMPT, RECEIPT_VALIDATION_PROMPT } from "./src/const/prompt";
-import { LLMUtility } from "./src/utils/llm_utils"
+import { modelStorage, PromptLibrary } from "@ashborne16/prompt-library"
 
 export class ReceiptProcessorApp extends App implements IPostMessageSent {
     constructor(info: IAppInfo, logger: ILogger, accessors: IAppAccessors) {
@@ -100,7 +99,7 @@ export class ReceiptProcessorApp extends App implements IPostMessageSent {
     }
 
     private initializePromptLibrary() {
-        LLMUtility.initialize(
+        modelStorage.initialize(
             {
                 "OCR_SYSTEM_PROMPT": OCR_SYSTEM_PROMPT,
                 "RECEIPT_SCAN_PROMPT": RECEIPT_SCAN_PROMPT,
