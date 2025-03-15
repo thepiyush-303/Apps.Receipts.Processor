@@ -1,7 +1,7 @@
 import { IRead, IHttp } from "@rocket.chat/apps-engine/definition/accessors";
 import { IMessage, IMessageAttachment } from "@rocket.chat/apps-engine/definition/messages";
 import { getAPIConfig } from "../config/settings";
-import { PromptLibrary } from "@ashborne16/prompt-library";
+import { PromptLibrary } from "../contrib/prompt-library/npm-module";
 
 export class ImageHandler {
   constructor(
