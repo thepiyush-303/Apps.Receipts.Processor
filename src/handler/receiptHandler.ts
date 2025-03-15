@@ -80,56 +80,110 @@ export class ReceiptHandler {
     return response;
   }
 
-  public async listReceiptData(
+  private formatReceiptsSummary(receipts: IReceiptData[]): string {
+    let receiptTotalPrice = 0;
+    let summary = `📋 *Your Receipts (${receipts.length})* 📋\n\n`;
+
+    receipts.forEach((receipt, index) => {
+      const date = new Date(receipt.uploadedDate).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+
+      const totalPrice = receipt.totalPrice.toFixed(2);
+      receiptTotalPrice += receipt.totalPrice;
+      summary += `*${index + 1}. Receipt from ${date}*\n`;
+      summary += `*Items:*\n`;
+      receipt.items.forEach(item => {
+        const itemTotal = (item.price * item.quantity).toFixed(2);
+        if (item.quantity > 1) {
+          summary += `• ${item.name} (${item.quantity} x $${(item.price / item.quantity).toFixed(2)}) - $${itemTotal}\n`;
+        } else {
+          summary += `• ${item.name} - $${itemTotal}\n`;
+        }
+      });
+
+      summary += `*Extra Fees:* $${receipt.extraFee.toFixed(2)}\n`;
+      summary += `*Total:* $${totalPrice}`;
+
+      if (index < receipts.length - 1) {
+        summary += `\n\n---\n\n`;
+      }
+    });
+
+    summary += `\n\n*Total Amount Across All Receipts:* $${receiptTotalPrice.toFixed(2)}`;
+    return summary;
+  }
+
+  private async displayReceipts(
+    receipts: IReceiptData[] | null,
+    room: IRoom,
+    appUser: IUser,
+    emptyMessage: string
+  ): Promise<void> {
+    if (!receipts || receipts.length === 0) {
+      await sendMessage(
+        this.modify,
+        appUser,
+        room,
+        emptyMessage
+      );
+      return;
+    }
+
+    const summary = this.formatReceiptsSummary(receipts);
+    await sendMessage(this.modify, appUser, room, summary);
+  }
+
+  public async listReceiptDataByRoomAndUser(
     sender: IUser,
     room: IRoom,
     appUser: IUser
   ): Promise<void> {
     try {
-      const receipts = await this.receiptService.getReceiptByUserAndRoom(sender.id, room.id);
-
-      if (!receipts || receipts.length === 0) {
-        await sendMessage(
-          this.modify,
-          appUser,
-          room,
-          EMPTY_ROOM_RECEIPTS_RESPONSE
-        );
-        return;
-      }
-
-      let summary = `📋 *Your Receipts (${receipts.length})* 📋\n\n`;
-      receipts.forEach((receipt, index) => {
-        const date = new Date(receipt.uploadedDate).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric'
-        });
-
-        const totalPrice = receipt.totalPrice.toFixed(2);
-
-        summary += `*${index + 1}. Receipt from ${date}*\n`;
-        summary += `*Items:*\n`;
-        receipt.items.forEach(item => {
-          const itemTotal = (item.price * item.quantity).toFixed(2);
-          if (item.quantity > 1) {
-            summary += `• ${item.name} (${item.quantity} x $${(item.price / item.quantity).toFixed(2)}) - $${itemTotal}\n`;
-          } else {
-            summary += `• ${item.name} - $${itemTotal}\n`;
-          }
-        });
-
-        summary += `*Extra Fees:* $${receipt.extraFee.toFixed(2)}\n`;
-        summary += `*Total:* $${totalPrice}`;
-
-        if (index < receipts.length - 1) {
-          summary += `\n\n---\n\n`;
-        }
-      });
-
-      await sendMessage(this.modify, appUser, room, summary);
+      const receipts = await this.receiptService.getReceiptsByUserAndRoom(sender.id, room.id);
+      await this.displayReceipts(receipts, room, appUser, EMPTY_ROOM_RECEIPTS_RESPONSE);
     } catch (error) {
       console.error('Error listing receipts:', error);
+      await sendMessage(
+        this.modify,
+        appUser,
+        room,
+        FAILED_GET_RECEIPTS_RESPONSE
+      );
+    }
+  }
+
+  public async listReceiptDataByRoom(
+    room: IRoom,
+    appUser: IUser
+  ): Promise<void> {
+    try {
+      const receipts = await this.receiptService.getReceiptsByRoom(room.id);
+      await this.displayReceipts(receipts, room, appUser, "No receipts found in this room.");
+    } catch (error) {
+      console.error('Error listing room receipts:', error);
+      await sendMessage(
+        this.modify,
+        appUser,
+        room,
+        FAILED_GET_RECEIPTS_RESPONSE
+      );
+    }
+  }
+
+  public async listReceiptDataByUserAndUploadDate(
+    userId: string,
+    date: Date,
+    room: IRoom,
+    appUser: IUser
+  ): Promise<void> {
+    try {
+      const receipts = await this.receiptService.getReceiptsByUserAndUploadedDate(userId, date);
+      await this.displayReceipts(receipts, room, appUser, "No receipts found for this date.");
+    } catch (error) {
+      console.error('Error listing user date receipts:', error);
       await sendMessage(
         this.modify,
         appUser,

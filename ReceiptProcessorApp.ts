@@ -18,7 +18,7 @@ import { ImageHandler } from "./src/handler/imageHandler";
 import { ReceiptHandler } from './src/handler/receiptHandler';
 import { IReceiptData, IReceiptItem } from './src/domain/receipt';
 import { OCR_SYSTEM_PROMPT, RECEIPT_SCAN_PROMPT, RECEIPT_VALIDATION_PROMPT } from "./src/const/prompt";
-import { modelStorage, PromptLibrary } from "@ashborne16/prompt-library"
+import { modelStorage, PromptLibrary } from "./src/contrib/prompt-library/npm-module"
 
 export class ReceiptProcessorApp extends App implements IPostMessageSent {
     constructor(info: IAppInfo, logger: ILogger, accessors: IAppAccessors) {

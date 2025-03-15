@@ -14,9 +14,9 @@ import { ReceiptProcessorApp } from "../../ReceiptProcessorApp";
 export class ReceiptCommand implements ISlashCommand {
     public constructor(private readonly app: ReceiptProcessorApp) {}
     public command = "receipt";
-    public i18nDescription = "receipt_commands";
+    public i18nDescription = "receipt_command_description";
     public providesPreview = true;
-    public i18nParamsExample = "";
+    public i18nParamsExample = "list | room | date YYYY-MM-DD | help";
 
     public async executor(
         context: SlashCommandContext,
@@ -45,6 +45,6 @@ export class ReceiptCommand implements ISlashCommand {
             http: http,
         });
 
-        commandUtility.execute();
+        await commandUtility.execute();
     }
 }
