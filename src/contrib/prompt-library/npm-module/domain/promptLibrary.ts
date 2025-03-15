@@ -4,6 +4,10 @@ export class PromptLibrary {
     private static models: Model[] = [];
     private static prompts: Map<string, Map<string, string>> = new Map();
 
+    /**
+     * Initializes the library with a list of models
+     * @param models - Array of Model objects to initialize the library with
+     */
     static initializeModels(models: Model[]): void {
         this.models = models;
         models.forEach(model => {
@@ -13,6 +17,12 @@ export class PromptLibrary {
         });
     }
 
+    /**
+     * Adds a prompt template to a specific model
+     * @param modelName - The name of the model to add the prompt to
+     * @param promptKey - The key identifier for the prompt
+     * @param promptValue - The prompt template text
+     */
     static addPrompt(modelName: string, promptKey: string, promptValue: string): void {
         if (!this.prompts.has(modelName)) {
             this.prompts.set(modelName, new Map());
@@ -20,10 +30,20 @@ export class PromptLibrary {
         this.prompts.get(modelName)?.set(promptKey, promptValue);
     }
 
+    /**
+     * Retrieves a prompt template for a specific model
+     * @param modelName - The name of the model
+     * @param promptKey - The key identifier for the prompt
+     * @returns The prompt template text, or empty string if not found
+     */
     static getPrompt(modelName: string, promptKey: string): string {
         return this.prompts.get(modelName)?.get(promptKey) || '';
     }
 
+    /**
+     * Lists all models registered in the library
+     * @returns Array of Model objects
+     */
     static listModels(): Model[] {
         return [...this.models];
     }
