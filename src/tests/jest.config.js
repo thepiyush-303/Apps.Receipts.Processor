@@ -5,7 +5,7 @@ export default {
     "^.+\\.tsx?$": ["ts-jest", { useESM: true }],
   },
   extensionsToTreatAsEsm: [".ts"],
-  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
+  moduleFileExtensions: ["ts", "js", "json", "node"],
   testMatch: ["**/*.test.ts"],
   collectCoverage: true,
   collectCoverageFrom: ["src/**/*.ts"],

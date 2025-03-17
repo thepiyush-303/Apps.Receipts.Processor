@@ -4,7 +4,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "declaration": false,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "removeComments": true,
     "strictNullChecks": true,
     "noImplicitReturns": true,
@@ -13,5 +13,6 @@
     },
 "include": [
     "**/*.ts"
-    ]
+    ],
+"exclude": ["tests"]
 }
