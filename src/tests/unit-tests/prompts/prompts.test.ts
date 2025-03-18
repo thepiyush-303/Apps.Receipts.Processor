@@ -1,5 +1,7 @@
 import { PromptLibrary } from "../../../contrib/prompt-library/npm-module";
 import { Model } from "../../../contrib/prompt-library/npm-module/domain/model";
+import { describe, it, expect, beforeEach } from '@jest/globals';
+
 
 describe('PromptLibrary', () => {
     beforeEach(() => {
@@ -10,7 +12,7 @@ describe('PromptLibrary', () => {
         const models = [new Model('model1', 'params1', 'quant1'), new Model('model2', 'params2', 'quant2')];
         PromptLibrary.initializeModels(models);
 
-        expect(PromptLibrary.listModels()).toMatchObject(models);
+        expect(PromptLibrary.listModels()).toMatchObject(models.map(model => ({ ...model })));
     });
 
     it('should add and retrieve prompts correctly', () => {
