@@ -34,8 +34,6 @@ export async function fetchDataHf() {
         }));
 
         return results;
-
-        return results;
     } catch (error) {
         if (error instanceof Error) throw error;
         throw new Error("Unknown error occurred");
