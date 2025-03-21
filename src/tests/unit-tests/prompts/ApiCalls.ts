@@ -1,5 +1,6 @@
 import { HFResponse, Row, ReceiptMetaData } from "./interfaces";
 import { API_KEY, modelType, API_END_POINT, LENGTH } from "./constants";
+
 export async function fetchDataHf() {
     const params = new URLSearchParams({
         dataset: "moyrsd/rocketchat_receipts_dataset",
@@ -26,7 +27,7 @@ export async function fetchDataHf() {
 
         const data: HFResponse = await response.json();
 
-        const results: Row[] = data.rows.map((item: { row: { filename: string; image_base64: string; metadata: ReceiptMetaData } }) => ({
+        const results: Row[] = data.rows.map((item) => ({
             filename: item.row.filename,
             image_base64: item.row.image_base64,
             metadata: item.row.metadata,
@@ -54,7 +55,7 @@ export async function llmResponse(image_base64: String, promt: String) {
                 messages: [
                     {
                         role: "user",
-                        content: JSON.stringify([
+                        content: [
                             {
                                 type: "image_url",
                                 image_url: {
@@ -62,7 +63,7 @@ export async function llmResponse(image_base64: String, promt: String) {
                                 },
                             },
                             { type: "text", text: promt },
-                        ]),
+                        ],
                     },
                 ],
             }),
@@ -70,6 +71,7 @@ export async function llmResponse(image_base64: String, promt: String) {
 
         if (!response.ok) {
             console.log(`HF failed - HTTP ${response.status}`);
+            console.log(await response.text());
             return;
         }
 
