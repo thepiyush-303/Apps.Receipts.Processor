@@ -10,7 +10,6 @@ We’ve all wasted hours squinting at crumpled receipts and battling spreadsheet
     <img width=60% src="https://github.com/user-attachments/assets/50c511e5-9e55-4618-95e6-a42720a41595">
 </div>
 
-
 <h2>Features 🚀</h2>
 <ul>
   <li>Scan and store expense data from receipt sent via images</li> 
@@ -41,11 +40,15 @@ rc-apps -v
 git clone https://github.com/RocketChat/Apps.Receipts.Processor.git
 ```
   
-<li style="margin-bottom: 1rem;">Install app dependencies</li>
+<li style="margin-bottom: 1rem;">Navigate to the repository</li>
   
 ```
 cd Apps.Receipts.Processor
-yarn install
+```
+
+<li style="margin-bottom: 1rem;">Install app dependencies </li>
+```
+cd app && yarn install
 ```
   
   <li style="margin-bottom: 1rem;">Deploy the app to the server </li>
@@ -59,9 +62,22 @@ yarn install
   - `password` is the password of your admin user.
 </ol>
 
+<h2 >Test Prompts 📝</h2>
+
+<ol>
+  <li style="margin-botton: 1rem;">Navigate to tests and install dependencies</li>
+  ```
+  cd tests && npm install
+  ```
+  <li style="margin-bottom: 1rem;">Run tests</li>
+  ```
+  npx jest
+  ```
+</ol>
+
 <h2>Usage 💬</h2>
 
--   **`/receipt list`**: Show list of receipt data in specific channel
+- **`/receipt list`**: Show list of receipt data in specific channel
 
 <h2>🧑‍💻 Contributing</h2>
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
