@@ -1,5 +1,5 @@
-import { PromptLibrary } from "../../../contrib/prompt-library/npm-module";
-import { Model } from "../../../contrib/prompt-library/npm-module/domain/model";
+import { PromptLibrary } from "../../../app/src/contrib/prompt-library/npm-module";
+import { Model } from "../../../app/src/contrib/prompt-library/npm-module/domain/model";
 import { describe, it, expect, beforeEach } from '@jest/globals';
 
 

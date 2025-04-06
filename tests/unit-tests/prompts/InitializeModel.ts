@@ -2,11 +2,11 @@ import {
     OCR_SYSTEM_PROMPT,
     RECEIPT_SCAN_PROMPT,
     RECEIPT_VALIDATION_PROMPT,
-} from "../../../const/prompt";
+} from "../../../app/src/const/prompt";
 import {
     modelStorage,
     PromptLibrary,
-} from "../../../contrib/prompt-library/npm-module";
+} from "../../../app/src/contrib/prompt-library/npm-module";
 
 modelStorage.initialize(
     {
