@@ -71,7 +71,7 @@ cd app && yarn install
   ```
   <li style="margin-bottom: 1rem;">Run tests</li>
   ```
-  npx jest
+  npm test
   ```
 </ol>
 
