@@ -44,7 +44,7 @@ git clone https://github.com/RocketChat/Apps.Receipts.Processor.git
 <li style="margin-bottom: 1rem;">Install app dependencies</li>
   
 ```
-cd Apps.Receipts.Processor
+cd Apps.Receipts.Processor/app
 yarn install
 ```
   
